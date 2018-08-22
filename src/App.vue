@@ -1,12 +1,21 @@
 <template>
   <div>
     <div>
-      <input type="text" v-model="filter" />
+      <input type="text" v-model="filter" autofocus/>
       <label> Hide owned? <input type="checkbox" v-model="hideOwned" /> </label>
+      <label> Era
+        <select v-model="filterEra">
+          <option value="Any"> Any </option>
+          <option value="Lith"> Lith </option>
+          <option value="Meso"> Meso </option>
+          <option value="Neo"> Neo </option>
+          <option value="Axi"> Axi </option>
+        </select>
+      </label>
     </div>
     <div class="items">
-      <item v-for="thing in stuff" :initialItem="thing"
-            :hideOwned="hideOwned" :filter="filter" />
+      <item v-for="thing in stuff" :item="thing"
+            :hideOwned="hideOwned" :filter="filter" :filter-era="filterEra" />
     </div>
   </div>
 </template>
@@ -25,6 +34,7 @@
        weapons: JSON.parse(readFileSync(__dirname + '/../data/weapons.json', 'utf8')),
        warframes: JSON.parse(readFileSync(__dirname + '/../data/warframes.json', 'utf8')),
        filter: "",
+       filterEra: "Any",
        hideOwned: false,
      }
    },
@@ -38,6 +48,7 @@
          }
      }
    }
+ }
 </script>
 
 <style>

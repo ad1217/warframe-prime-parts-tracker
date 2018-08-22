@@ -1,33 +1,32 @@
 <template>
   <div class="item" v-show="filtered && !(hideOwned && owned)">
-    <span class="name">
+    <span class="item.name" v-if="filterEra === 'Any'">
       <input type="checkbox" v-model="owned" />
-      {{ name }}
+      {{ item.name }}
     </span>
-    <div class="component"
-         v-for="component in components"
-         v-if="'ducats' in component && !(hideOwned && component.owned)">
-      <input v-for="index in component.itemCount" type="checkbox"
-             v-model="component.owned" />
-      {{ component.name }}
+    <div v-for="component in item.components">
+      <RecpieComponent :itemName="item.name" :component="component"
+                       :hideOwned="hideOwned" :filter-era="filterEra"
+                       v-for="index in component.itemCount" />
     </div>
   </div>
 </template>
 
 <script>
+ import RecpieComponent from './RecpieComponent';
+
  export default {
    name: "Item",
-   props: ['initialItem', 'hideOwned', 'filter'],
+   props: ['item', 'hideOwned', 'filter', 'filterEra'],
+   components: { RecpieComponent },
    data() {
      return {
-       owned: false,
-       name: this.initialItem.name,
-       components: this.initialItem.components,
+       owned: false
      }
    },
    computed: {
      filtered() {
-       return this.name.toLowerCase().includes(this.filter.toLowerCase());
+       return this.item.name.toLowerCase().includes(this.filter.toLowerCase());
      }
    }
  }
