@@ -30,7 +30,6 @@
    components: { Item },
    data () {
      return {
-       mine: readFileSync(__dirname + '/../data/mine.txt', 'utf8').split('\n'),
        weapons: JSON.parse(readFileSync(__dirname + '/../data/weapons.json', 'utf8')),
        warframes: JSON.parse(readFileSync(__dirname + '/../data/warframes.json', 'utf8')),
        filter: "",
@@ -42,10 +41,8 @@
      stuff() {
        return this
          .weapons.concat(this.warframes)
-         .filter(item => item.name.includes('Prime') &&
-                       !this.mine.includes(item.name))
+         .filter(item => item.name.includes('Prime'))
          .filter(item => 'components' in item)
-         }
      }
    }
  }
