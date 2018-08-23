@@ -12,10 +12,20 @@
 <script>
  export default {
    name: "RecpieComponent",
-   props: ['itemName', 'component', 'hideOwned', 'filterEra'],
+   props: ['itemName', 'component', 'index', 'hideOwned', 'filterEra'],
    data() {
      return {
        owned: false
+     }
+   },
+   mounted() {
+     if (localStorage[this.storageName]) {
+       this.owned = JSON.parse(localStorage[this.storageName]);
+     }
+   },
+   watch: {
+     owned(newOwned) {
+       localStorage[this.storageName] = newOwned;
      }
    },
    computed: {
@@ -28,6 +38,9 @@
      visible() {
        return !(this.hideOwned && this.owned) &&
               (this.filterEra === 'Any' || this.eras.has(this.filterEra));
+     },
+     storageName() {
+       return `items/${this.itemName}/${this.component.name}/${this.index}`;
      }
    }
  }

@@ -5,8 +5,8 @@
       {{ item.name }}
     </span>
     <div v-for="component in item.components">
-      <RecpieComponent :itemName="item.name" :component="component"
-                       :hideOwned="hideOwned" :filter-era="filterEra"
+      <RecpieComponent :itemName="item.name" :component="component" :index="index"
+                       :hideOwned="hideOwned" :filterEra="filterEra"
                        v-for="index in component.itemCount" />
     </div>
   </div>
@@ -22,6 +22,16 @@
    data() {
      return {
        owned: false
+     }
+   },
+   mounted() {
+     if (localStorage[`items/${this.item.name}`]) {
+       this.owned = JSON.parse(localStorage[`items/${this.item.name}`]);
+     }
+   },
+   watch: {
+     owned(newOwned) {
+       localStorage[`items/${this.item.name}`] = newOwned;
      }
    },
    computed: {
