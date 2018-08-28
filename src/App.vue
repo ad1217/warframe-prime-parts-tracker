@@ -13,9 +13,11 @@
         </select>
       </label>
     </div>
-    <div class="items">
-      <item v-for="thing in stuff" :item="thing"
-            :hideOwned="hideOwned" :filter="filter" :filter-era="filterEra" />
+    <div class="wrapper">
+      <div class="items">
+        <item v-for="thing in stuff" :item="thing"
+              :hideOwned="hideOwned" :filter="filter" :filter-era="filterEra" />
+      </div>
     </div>
   </div>
 </template>
@@ -54,8 +56,18 @@
    color: #eee;
  }
 
+ .wrapper {
+   position: relative;
+   top: 0px;
+   bottom: 0px;
+   height: 95%
+ }
  .items {
    display: flex;
-   flex-flow: row wrap;
+   flex-flow: column wrap;
+   width: auto;
+   position: absolute;
+   top: 0px;
+   bottom: 0px;
  }
 </style>
