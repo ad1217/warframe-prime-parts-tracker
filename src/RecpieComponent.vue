@@ -6,7 +6,10 @@
     <span v-if="this.filterEra !== 'Any'" >
       {{ itemName }}
     </span>
-    {{ component.name }} [{{ eraLetters }}]
+    {{ component.name }}
+    [<span v-for="era in Object.keys(eras)"
+           :title="eras[era].map(e => e.location + ' | ' + e.rarity).join('\n')"
+     >{{ era.slice(0, 1) }}</span>]
   </div>
 </template>
 
@@ -26,10 +29,11 @@
    },
    computed: {
      eras() {
-       return new Set(this.component.drops.map(d => d.location.split(" ")[0]));
-     },
-     eraLetters() {
-       return Array.from(this.eras).map(e => e.slice(0, 1)).join("");
+       return this.component.drops .reduce((acc, d) => {
+         let key = d.location.split(" ")[0];
+         (acc[key] = acc[key] || []).push(d);
+         return acc;
+       }, {});
      },
      ownedCount() {
        return this.owned.reduce((acc, x) => acc += (x === true), 0);
