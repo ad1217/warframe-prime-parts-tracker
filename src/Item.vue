@@ -1,14 +1,14 @@
 <template>
-  <div class="item" v-show="filtered && !(hideOwned && owned)">
+  <div class="item" v-show="visible">
     <span class="name" v-if="filterEra === 'Any'">
-      <input type="checkbox" v-model="owned" />
+      <input type="checkbox" v-model="owned.overall" />
       {{ item.name }}
     </span>
-    <div v-for="component in item.components">
-      <RecpieComponent :itemName="item.name" :component="component" :index="index"
-                       :hideOwned="hideOwned" :filterEra="filterEra"
-                       v-for="index in component.itemCount" />
-    </div>
+    <RecpieComponent @ownedUpdate="componentUpdate(component.name, $event)"
+                     :initialOwned="owned[component.name] || 0"
+                     :itemName="item.name" :component="component"
+                     :hideOwned="hideOwned" :filterEra="filterEra"
+                     v-for="component in item.components" />
   </div>
 </template>
 
@@ -21,22 +21,37 @@
    components: { RecpieComponent },
    data() {
      return {
-       owned: false
+       owned: {}
      }
    },
-   mounted() {
+
+   created() {
      if (localStorage[`items/${this.item.name}`]) {
-       this.owned = JSON.parse(localStorage[`items/${this.item.name}`]);
+       let data = JSON.parse(localStorage[`items/${this.item.name}`]);
+       this.owned = data;
+     }
+     else {
+       this.components = this.item.components.reduce(
+         (acc, comp) => acc[comp] = 0, {})
      }
    },
+
    watch: {
-     owned(newOwned) {
-       localStorage[`items/${this.item.name}`] = newOwned;
+     owned() {
+       localStorage[`items/${this.item.name}`] = JSON.stringify(this.owned);
      }
    },
+
+   methods: {
+     componentUpdate(name, newValue) {
+       this.$set(this.owned, name, newValue);
+     }
+   },
+
    computed: {
-     filtered() {
-       return this.item.name.toLowerCase().includes(this.filter.toLowerCase());
+     visible() {
+       return (!(this.hideOwned && this.owned.overall)
+            && this.item.name.toLowerCase().includes(this.filter.toLowerCase()));
      }
    }
  }

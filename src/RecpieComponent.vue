@@ -1,7 +1,8 @@
 <template>
   <div class="component"
-       v-if="'ducats' in component" v-show="visible">
-    <input type="checkbox" v-model="owned" />
+       v-if="'ducats' in component && visible" >
+    <input type="checkbox" v-model="owned[index - 1]"
+           v-for="index in component.itemCount" />
     <span v-if="this.filterEra !== 'Any'" >
       {{ itemName }}
     </span>
@@ -12,20 +13,15 @@
 <script>
  export default {
    name: "RecpieComponent",
-   props: ['itemName', 'component', 'index', 'hideOwned', 'filterEra'],
+   props: ['itemName', 'initialOwned', 'component', 'hideOwned', 'filterEra'],
    data() {
      return {
-       owned: false
-     }
-   },
-   mounted() {
-     if (localStorage[this.storageName]) {
-       this.owned = JSON.parse(localStorage[this.storageName]);
+       owned: Array(this.initialOwned).fill(true, 0, this.initialOwned)
      }
    },
    watch: {
      owned(newOwned) {
-       localStorage[this.storageName] = newOwned;
+       this.$emit('ownedUpdate', this.ownedCount);
      }
    },
    computed: {
@@ -35,12 +31,12 @@
      eraLetters() {
        return Array.from(this.eras).map(e => e.slice(0, 1)).join("");
      },
-     visible() {
-       return !(this.hideOwned && this.owned) &&
-              (this.filterEra === 'Any' || this.eras.has(this.filterEra));
+     ownedCount() {
+       return this.owned.reduce((acc, x) => acc += (x === true), 0);
      },
-     storageName() {
-       return `items/${this.itemName}/${this.component.name}/${this.index}`;
+     visible() {
+       return (!(this.hideOwned && this.ownedCount === this.component.itemCount)
+            && (this.filterEra === 'Any' || this.eras.has(this.filterEra)));
      }
    }
  }
