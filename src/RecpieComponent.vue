@@ -40,7 +40,7 @@
      },
      visible() {
        return (!(this.hideOwned && this.ownedCount === this.component.itemCount)
-            && (this.filterEra === 'Any' || this.eras.has(this.filterEra)));
+            && (this.filterEra === 'Any' || this.filterEra in this.eras));
      }
    }
  }
