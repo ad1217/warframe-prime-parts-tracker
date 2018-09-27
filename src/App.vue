@@ -15,7 +15,7 @@
     </div>
     <div class="wrapper">
       <div class="items">
-        <item v-for="thing in stuff" :item="thing"
+        <Item v-for="item in items" :item="item"
               :hideOwned="hideOwned" :filter="filter" :filter-era="filterEra" />
       </div>
     </div>
@@ -23,7 +23,7 @@
 </template>
 
 <script>
- import {readFileSync} from 'fs';
+ import item_data from '../node_modules/warframe-items/data/json/*.json';
 
  import Item from './Item';
 
@@ -32,19 +32,15 @@
    components: { Item },
    data () {
      return {
-       weapons: JSON.parse(readFileSync(__dirname + '/../data/weapons.json', 'utf8')),
-       warframes: JSON.parse(readFileSync(__dirname + '/../data/warframes.json', 'utf8')),
+       items: ['Primary', 'Secondary', 'Melee', 'Archwing',
+               'Sentinels', 'Pets', 'Warframes']
+         .map(category => item_data[category])
+         .reduce((acc, val) => acc.concat(val), [])
+         .filter(item => item.name.includes('Prime'))
+         .filter(item => 'components' in item),
        filter: "",
        filterEra: "Any",
        hideOwned: false,
-     }
-   },
-   computed: {
-     stuff() {
-       return this
-         .weapons.concat(this.warframes)
-         .filter(item => item.name.includes('Prime'))
-         .filter(item => 'components' in item)
      }
    }
  }
