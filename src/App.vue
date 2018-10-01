@@ -16,7 +16,7 @@
     <div class="wrapper">
       <div class="items">
         <Item v-for="item in items" :item="item"
-              :hideOwned="hideOwned" :filter="filter" :filter-era="filterEra" />
+              :hide-owned="hideOwned" :filter="filter" :filter-era="filterEra" />
       </div>
     </div>
   </div>

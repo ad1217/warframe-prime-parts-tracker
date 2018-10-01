@@ -5,9 +5,9 @@
       {{ item.name }}
     </span>
     <RecpieComponent @ownedUpdate="componentUpdate(component.name, $event)"
-                     :initialOwned="owned[component.name] || 0"
-                     :itemName="item.name" :component="component"
-                     :hideOwned="hideOwned" :filterEra="filterEra"
+                     :initial-owned="owned[component.name] || 0"
+                     :item-name="item.name" :component="component"
+                     :hide-owned="hideOwned" :filter-era="filterEra"
                      v-for="component in item.components" />
   </div>
 </template>
