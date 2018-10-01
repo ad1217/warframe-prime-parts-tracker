@@ -8,7 +8,7 @@
                      :initial-owned="owned[component.name] || 0"
                      :item-name="item.name" :component="component"
                      :hide-owned="hideOwned" :filter-era="filterEra"
-                     v-for="component in item.components" />
+                     v-for="component in item.components" v-if="component.drops" />
   </div>
 </template>
 
@@ -31,8 +31,8 @@
        this.owned = data;
      }
      else {
-       this.components = this.item.components.reduce(
-         (acc, comp) => acc[comp] = 0, {})
+       this.components = {}
+       this.item.components.forEach(comp => this.components[comp.name] = 0)
      }
    },
 
