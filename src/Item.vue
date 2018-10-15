@@ -4,7 +4,7 @@
       <input type="checkbox" v-model="owned.overall" />
       {{ item.name }}
     </span>
-    <RecpieComponent @ownedUpdate="componentUpdate(component.name, $event)"
+    <RecpieComponent @owned-update="componentUpdate(component.name, $event)"
                      :initial-owned="owned[component.name] || 0"
                      :item-name="item.name" :component="component"
                      :hide-owned="hideOwned" :filter-era="filterEra"

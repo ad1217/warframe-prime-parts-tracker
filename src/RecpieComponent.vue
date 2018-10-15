@@ -1,6 +1,5 @@
 <template>
-  <div class="component"
-       v-if="'ducats' in component && visible" >
+  <div class="component" v-show="visible" >
     <input type="checkbox" v-model="owned[index - 1]"
            v-for="index in component.itemCount" />
     <span v-if="this.filterEra !== 'Any'" >
@@ -24,12 +23,12 @@
    },
    watch: {
      owned(newOwned) {
-       this.$emit('ownedUpdate', this.ownedCount);
+       this.$emit('owned-update', this.ownedCount);
      }
    },
    computed: {
      eras() {
-       return this.component.drops .reduce((acc, d) => {
+       return this.component.drops.reduce((acc, d) => {
          let key = d.location.split(" ")[0];
          (acc[key] = acc[key] || []).push(d);
          return acc;
@@ -40,6 +39,7 @@
      },
      visible() {
        return (!(this.hideOwned && this.ownedCount === this.component.itemCount)
+            && 'ducats' in this.component
             && (this.filterEra === 'Any' || this.filterEra in this.eras));
      }
    }
