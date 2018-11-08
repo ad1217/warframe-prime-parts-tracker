@@ -5,11 +5,11 @@
   "dependencies": {
     "vue": "^2.5.17",
     "vue-hot-reload-api": "^2.3.1",
-    "warframe-items": "^1.64.0"
+    "warframe-items": "^1.112.0"
   },
   "devDependencies": {
+    "@vue/component-compiler-utils": "^2.3.0",
     "parcel": "^1.9.7",
-    "@vue/component-compiler-utils": "^2.2.0",
     "vue-template-compiler": "^2.5.17"
   },
   "scripts": {
