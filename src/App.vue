@@ -37,7 +37,8 @@
          .map(category => item_data[category])
          .reduce((acc, val) => acc.concat(val), [])
          .filter(item => item.name.includes('Prime'))
-         .filter(item => 'components' in item),
+         .filter(item => 'components' in item)
+         .sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0),
        filter: "",
        filterEra: "Any",
        hideOwned: false,
