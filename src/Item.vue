@@ -34,12 +34,10 @@
        this.components = {}
        this.item.components.forEach(comp => this.components[comp.name] = 0)
      }
-   },
 
-   watch: {
-     owned() {
-       localStorage[`items/${this.item.name}`] = JSON.stringify(this.owned);
-     }
+     this.$watch('owned', () => {
+       localStorage[`items/${this.item.name}`] = JSON.stringify(this.owned)
+     }, {deep: true})
    },
 
    methods: {
