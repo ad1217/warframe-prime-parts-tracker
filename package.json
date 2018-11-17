@@ -5,7 +5,7 @@
   "dependencies": {
     "vue": "^2.5.17",
     "vue-hot-reload-api": "^2.3.1",
-    "warframe-items": "^1.112.0"
+    "warframe-items": "^1.163.0"
   },
   "devDependencies": {
     "@vue/component-compiler-utils": "^2.3.0",
