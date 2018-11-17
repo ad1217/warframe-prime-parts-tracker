@@ -1,5 +1,5 @@
 <template>
-  <div class="item" v-show="visible">
+  <div class="item" :class="{vaulted: item.vaulted}" v-show="visible">
     <span class="name" v-if="filterEra === 'Any'">
       <input type="checkbox" v-model="owned.overall" />
       {{ item.name }}
@@ -61,6 +61,10 @@
    padding: .2em;
    background-color: #444;
    border-radius: 5px;
+ }
+
+ .item.vaulted {
+   border: 2px solid #777;
  }
 
  .name {
