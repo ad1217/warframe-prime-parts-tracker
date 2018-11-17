@@ -6,8 +6,7 @@
       {{ itemName }}
     </span>
     {{ component.name }}
-    [<span v-for="era in Object.keys(eras)"
-           :title="eras[era].map(e => e.location + ' | ' + e.rarity).join('\n')"
+    [<span v-for="era in Object.keys(eras)" :title="eraRarity(era)"
      >{{ era.slice(0, 1) }}</span>]
   </div>
 </template>
@@ -24,6 +23,15 @@
    watch: {
      owned(newOwned) {
        this.$emit('owned-update', this.ownedCount);
+     }
+   },
+   methods: {
+     eraRarity(era) {
+       return this
+         .eras[era]
+         .filter(e => e.location.includes('Intact'))
+         .map(e => e.location.replace(' Intact', '') + ' | ' + e.rarity)
+         .join('\n')
      }
    },
    computed: {
