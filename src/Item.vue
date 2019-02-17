@@ -5,6 +5,7 @@
       {{ item.name }}
     </span>
     <RecpieComponent
+      ref="components"
       :owned.sync="owned[component.name]"
       :item-name="item.name"
       :component="component"
@@ -25,6 +26,7 @@ export default {
   data() {
     return {
       owned: {},
+      someChildVisible: true,
     };
   },
 
@@ -40,6 +42,21 @@ export default {
     this.owned = owned;
   },
 
+  mounted() {
+    this.someChildVisible = this.checkChildrenVisible();
+  },
+
+  beforeUpdate() {
+    // TODO: fix terrible hack to hide this Item when all child components are hidden
+    this.someChildVisible = this.checkChildrenVisible();
+  },
+
+  methods: {
+    checkChildrenVisible() {
+      return Array.from(this.$refs.components).some(comp => comp.visible);
+    },
+  },
+
   watch: {
     owned: {
       handler(val) {
@@ -53,6 +70,7 @@ export default {
     visible() {
       return (
         !(this.filter.owned && this.owned.overall) &&
+        (this.filter.era === 'Any' || this.someChildVisible) &&
         this.item.name.toLowerCase().includes(this.filter.string.toLowerCase())
       );
     },
