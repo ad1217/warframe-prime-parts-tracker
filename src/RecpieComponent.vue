@@ -1,6 +1,6 @@
 <template>
   <div class="component" v-show="visible" >
-    <input type="checkbox" v-model="owned[index - 1]"
+    <input type="checkbox" :value="index-1" v-model="ownedArray"
            v-for="index in component.itemCount" />
     <span v-if="this.filterEra !== 'Any'" >
       {{ itemName }}
@@ -14,17 +14,19 @@
 <script>
  export default {
    name: "RecpieComponent",
-   props: ['itemName', 'initialOwned', 'component', 'hideOwned', 'filterEra'],
+   props: ['itemName', 'owned', 'component', 'hideOwned', 'filterEra'],
    data() {
      return {
-       owned: Array(this.initialOwned).fill(true, 0, this.initialOwned)
+       ownedArray: [...Array(this.owned).keys()],
      }
    },
+
    watch: {
-     owned(newOwned) {
-       this.$emit('owned-update', this.ownedCount);
+     ownedArray(newOwned) {
+       this.$emit('update:owned', this.ownedArray.length);
      }
    },
+
    methods: {
      eraRarity(era) {
        return this
@@ -34,6 +36,7 @@
          .join('\n')
      }
    },
+
    computed: {
      eras() {
        return this.component.drops.reduce((acc, d) => {
@@ -42,11 +45,9 @@
          return acc;
        }, {});
      },
-     ownedCount() {
-       return this.owned.reduce((acc, x) => acc += (x === true), 0);
-     },
+
      visible() {
-       return (!(this.hideOwned && this.ownedCount === this.component.itemCount)
+       return (!(this.hideOwned && this.ownedArray.length === this.component.itemCount)
             && 'ducats' in this.component
             && (this.filterEra === 'Any' || this.filterEra in this.eras));
      }

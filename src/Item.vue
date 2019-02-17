@@ -4,8 +4,7 @@
       <input type="checkbox" v-model="owned.overall" />
       {{ item.name }}
     </span>
-    <RecpieComponent @owned-update="componentUpdate(component.name, $event)"
-                     :initial-owned="owned[component.name] || 0"
+    <RecpieComponent :owned.sync="owned[component.name]"
                      :item-name="item.name" :component="component"
                      :hide-owned="hideOwned" :filter-era="filterEra"
                      v-for="component in item.components" v-if="component.drops" />
@@ -21,29 +20,28 @@
    components: { RecpieComponent },
    data() {
      return {
-       owned: {}
+       owned: {},
      }
    },
 
    created() {
+     let owned = Object.fromEntries(this.item.components.map(
+       comp => [comp.name, 0]));
+
      if (localStorage[`items/${this.item.name}`]) {
-       let data = JSON.parse(localStorage[`items/${this.item.name}`]);
-       this.owned = data;
-     }
-     else {
-       this.components = {}
-       this.item.components.forEach(comp => this.components[comp.name] = 0)
+       Object.assign(
+	 owned, JSON.parse(localStorage[`items/${this.item.name}`]));
      }
 
-     this.$watch('owned', () => {
-       localStorage[`items/${this.item.name}`] = JSON.stringify(this.owned)
-     }, {deep: true})
+     this.owned = owned;
    },
 
-   methods: {
-     componentUpdate(name, newValue) {
-       this.$set(this.owned, name, newValue);
-     }
+   watch: {
+     owned: {
+       handler(val) {
+ 	 localStorage[`items/${this.item.name}`] = JSON.stringify(this.owned)
+       },
+       deep: true}
    },
 
    computed: {
