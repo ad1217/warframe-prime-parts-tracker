@@ -1,6 +1,6 @@
 <template>
   <div class="item" :class="{ vaulted: item.vaulted }" v-show="visible">
-    <span class="name" v-if="filterEra === 'Any'">
+    <span class="name" v-if="filter.era === 'Any'">
       <input type="checkbox" v-model="owned.overall" />
       {{ item.name }}
     </span>
@@ -8,8 +8,7 @@
       :owned.sync="owned[component.name]"
       :item-name="item.name"
       :component="component"
-      :hide-owned="hideOwned"
-      :filter-era="filterEra"
+      :filter="filter"
       v-for="component in item.components"
       v-if="component.drops"
     />
@@ -21,7 +20,7 @@ import RecpieComponent from './RecpieComponent';
 
 export default {
   name: 'Item',
-  props: ['item', 'hideOwned', 'filter', 'filterEra'],
+  props: ['item', 'filter'],
   components: { RecpieComponent },
   data() {
     return {
@@ -53,8 +52,8 @@ export default {
   computed: {
     visible() {
       return (
-        !(this.hideOwned && this.owned.overall) &&
-        this.item.name.toLowerCase().includes(this.filter.toLowerCase())
+        !(this.filter.owned && this.owned.overall) &&
+        this.item.name.toLowerCase().includes(this.filter.string.toLowerCase())
       );
     },
   },

@@ -1,11 +1,11 @@
 <template>
   <div>
     <div>
-      <input type="text" v-model="filter" autofocus />
-      <label> Hide owned? <input type="checkbox" v-model="hideOwned" /> </label>
+      <input type="text" v-model="filter.string" autofocus />
+      <label> Hide owned? <input type="checkbox" v-model="filter.owned" /> </label>
       <label>
         Era
-        <select v-model="filterEra">
+        <select v-model="filter.era">
           <option value="Any"> Any </option>
           <option value="Lith"> Lith </option>
           <option value="Meso"> Meso </option>
@@ -19,9 +19,7 @@
         <Item
           v-for="item in items"
           :item="item"
-          :hide-owned="hideOwned"
           :filter="filter"
-          :filter-era="filterEra"
         />
       </div>
     </div>
@@ -52,9 +50,11 @@ export default {
         .filter(item => item.name.includes('Prime'))
         .filter(item => 'components' in item)
         .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0)),
-      filter: '',
-      filterEra: 'Any',
-      hideOwned: true,
+      filter: {
+	string: '',
+	era: 'Any',
+	owned: true,
+      },
     };
   },
 };

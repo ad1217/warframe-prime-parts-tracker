@@ -6,7 +6,7 @@
       v-model="ownedArray"
       v-for="index in component.itemCount"
     />
-    <span v-if="this.filterEra !== 'Any'">
+    <span v-if="this.filter.era !== 'Any'">
       {{ itemName }}
     </span>
     {{ component.name }}
@@ -20,7 +20,7 @@
 <script>
 export default {
   name: 'RecpieComponent',
-  props: ['itemName', 'owned', 'component', 'hideOwned', 'filterEra'],
+  props: ['itemName', 'owned', 'component', 'filter'],
   data() {
     return {
       ownedArray: [...Array(this.owned).keys()],
@@ -54,10 +54,11 @@ export default {
     visible() {
       return (
         !(
-          this.hideOwned && this.ownedArray.length === this.component.itemCount
+          this.filter.owned &&
+          this.ownedArray.length === this.component.itemCount
         ) &&
         'ducats' in this.component &&
-        (this.filterEra === 'Any' || this.filterEra in this.eras)
+        (this.filter.era === 'Any' || this.filter.era in this.eras)
       );
     },
   },
