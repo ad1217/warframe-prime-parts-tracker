@@ -10,9 +10,13 @@
       {{ itemName }}
     </span>
     {{ component.name }}
-    [<span v-for="era in Object.keys(eras)" :title="eraRarity(era)">{{
-      era.slice(0, 1)
-    }}</span
+    [<span v-for="(era, name) in eras">
+      <span
+        v-for="[loc, rarity] in eraRarity(era)"
+        :class="rarity"
+        :title="loc + ' | ' + rarity"
+        >{{ name.slice(0, 1) }}</span
+      > </span
     >]
   </div>
 </template>
@@ -35,10 +39,13 @@ export default {
 
   methods: {
     eraRarity(era) {
-      return this.eras[era]
+      console.log(new Set(era.map(e => e.rarity)));
+      return era
         .filter(e => e.location.includes('Intact'))
-        .map(e => e.location.replace(' Intact', '') + ' | ' + e.rarity)
-        .join('\n');
+        .map(e => [
+          e.location.replace(' Intact', ''),
+          e.chance < 0.1 ? 'Rare' : e.chance < 0.2 ? 'Uncommon' : 'Common',
+        ]);
     },
   },
 
@@ -64,3 +71,17 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.Common {
+  color: #b06500;
+}
+
+.Uncommon {
+  color: silver;
+}
+
+.Rare {
+  color: gold;
+}
+</style>
