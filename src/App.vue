@@ -2,7 +2,9 @@
   <div>
     <div>
       <input type="text" v-model="filter.string" autofocus />
-      <label> Hide owned? <input type="checkbox" v-model="filter.owned" /> </label>
+      <label>
+        Hide owned? <input type="checkbox" v-model="filter.owned" />
+      </label>
       <label>
         Era
         <select v-model="filter.era">
@@ -16,11 +18,7 @@
     </div>
     <div class="wrapper">
       <div class="items">
-        <Item
-          v-for="item in items"
-          :item="item"
-          :filter="filter"
-        />
+        <Item v-for="item in items" :item="item" :filter="filter" />
       </div>
     </div>
   </div>
@@ -51,9 +49,9 @@ export default {
         .filter(item => 'components' in item)
         .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0)),
       filter: {
-	string: '',
-	era: 'Any',
-	owned: true,
+        string: '',
+        era: 'Any',
+        owned: true,
       },
     };
   },
