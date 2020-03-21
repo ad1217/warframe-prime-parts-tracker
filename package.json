@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "dependencies": {
-    "vue": "^2.6.10",
+    "vue": "^2.6.11",
     "vue-hot-reload-api": "^2.3.4",
-    "warframe-items": "^1.557.0"
+    "warframe-items": "^1.857.0"
   },
   "devDependencies": {
-    "@vue/component-compiler-utils": "^3.0.0",
+    "@vue/component-compiler-utils": "^3.1.1",
     "parcel": "^1.12.4",
-    "vue-template-compiler": "^2.6.10"
+    "vue-template-compiler": "^2.6.11"
   },
   "scripts": {
     "start": "parcel src/index.html",
