@@ -18,44 +18,50 @@
     </div>
     <div class="wrapper">
       <div class="items">
-        <Item v-for="item in items" :item="item" :filter="filter" />
+        <Item
+          v-for="item in items"
+          :key="item.name"
+          :item="item"
+          :filter="filter"
+        />
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import item_data from '../node_modules/warframe-items/data/json/*.json';
+<script lang="ts">
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Item as WFItem } from 'warframe-items';
 
-import Item from './Item';
+import Primary from 'warframe-items/data/json/Primary.json';
+import Secondary from 'warframe-items/data/json/Secondary.json';
+import Melee from 'warframe-items/data/json/Melee.json';
+import Archwing from 'warframe-items/data/json/Archwing.json';
+import Sentinels from 'warframe-items/data/json/Sentinels.json';
+import Pets from 'warframe-items/data/json/Pets.json';
+import Warframes from 'warframe-items/data/json/Warframes.json';
 
-export default {
-  name: 'App',
-  components: { Item },
-  data() {
-    return {
-      items: [
-        'Primary',
-        'Secondary',
-        'Melee',
-        'Archwing',
-        'Sentinels',
-        'Pets',
-        'Warframes',
-      ]
-        .map(category => item_data[category])
-        .reduce((acc, val) => acc.concat(val), [])
-        .filter(item => item.name.includes('Prime'))
-        .filter(item => 'components' in item)
-        .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0)),
-      filter: {
-        string: '',
-        era: 'Any',
-        owned: true,
-      },
-    };
-  },
-};
+import Item, { Filter } from './Item.vue';
+
+@Component({ components: { Item } })
+export default class App extends Vue {
+  items = ([
+    Primary,
+    Secondary,
+    Melee,
+    Archwing,
+    Sentinels,
+    Pets,
+    Warframes,
+  ].flat() as WFItem[])
+    .filter((item) => item.name.includes('Prime') && 'components' in item)
+    .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+  filter: Filter = {
+    string: '',
+    era: 'Any',
+    owned: true,
+  };
+}
 </script>
 
 <style>

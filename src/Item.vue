@@ -4,35 +4,46 @@
       <input type="checkbox" v-model="owned.overall" />
       {{ item.name }}
     </span>
-    <RecpieComponent
+    <RecipeComponent
       ref="components"
       :owned.sync="owned[component.name]"
       :item-name="item.name"
       :component="component"
       :filter="filter"
-      v-for="component in item.components"
-      v-if="component.drops"
+      v-for="(component, index) in filteredComponents"
+      :key="index"
     />
   </div>
 </template>
 
-<script>
-import RecpieComponent from './RecpieComponent';
+<script lang="ts">
+import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator';
+import { Item as WFItem, Component as WFComponent } from 'warframe-items';
 
-export default {
-  name: 'Item',
-  props: ['item', 'filter'],
-  components: { RecpieComponent },
-  data() {
-    return {
-      owned: {},
-      someChildVisible: true,
-    };
-  },
+import RecipeComponent from './RecipeComponent.vue';
+
+export type Eras = 'Any' | 'Lith' | 'Meso' | 'Neo' | 'Axi';
+
+export interface Filter {
+  string: string;
+  era: Eras;
+  owned: boolean;
+}
+
+@Component({ components: { RecipeComponent } })
+export default class Item extends Vue {
+  @Prop({ required: true }) readonly item!: WFItem &
+    Required<Pick<WFItem, 'components'>>;
+  @Prop({ required: true }) readonly filter!: Filter;
+
+  @Ref() readonly RecpieComponents?: RecipeComponent[];
+
+  owned: { [key: string]: number } = {};
+  someChildVisible = true;
 
   created() {
-    let owned = Object.fromEntries(
-      this.item.components.map(comp => [comp.name, 0])
+    const owned = Object.fromEntries(
+      this.item.components.map((comp) => [comp.name, 0])
     );
 
     if (localStorage[`items/${this.item.name}`]) {
@@ -40,42 +51,37 @@ export default {
     }
 
     this.owned = owned;
-  },
+  }
 
   mounted() {
     this.someChildVisible = this.checkChildrenVisible();
-  },
+  }
 
   beforeUpdate() {
     // TODO: fix terrible hack to hide this Item when all child components are hidden
     this.someChildVisible = this.checkChildrenVisible();
-  },
+  }
 
-  methods: {
-    checkChildrenVisible() {
-      return Array.from(this.$refs.components).some(comp => comp.visible);
-    },
-  },
+  checkChildrenVisible() {
+    return this.RecpieComponents?.some((comp) => comp.visible) ?? false;
+  }
 
-  watch: {
-    owned: {
-      handler(val) {
-        localStorage[`items/${this.item.name}`] = JSON.stringify(this.owned);
-      },
-      deep: true,
-    },
-  },
+  @Watch('owned', { deep: true }) onOwnedChanged(val: Item['owned']) {
+    localStorage[`items/${this.item.name}`] = JSON.stringify(this.owned);
+  }
 
-  computed: {
-    visible() {
-      return (
-        !(this.filter.owned && this.owned.overall) &&
-        (this.filter.era === 'Any' || this.someChildVisible) &&
-        this.item.name.toLowerCase().includes(this.filter.string.toLowerCase())
-      );
-    },
-  },
-};
+  get visible() {
+    return (
+      !(this.filter.owned && this.owned.overall) &&
+      (this.filter.era === 'Any' || this.someChildVisible) &&
+      this.item.name.toLowerCase().includes(this.filter.string.toLowerCase())
+    );
+  }
+
+  get filteredComponents() {
+    return this.item.components.filter((c) => c.drops);
+  }
+}
 </script>
 
 <style scoped>
