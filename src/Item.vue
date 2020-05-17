@@ -11,6 +11,7 @@
       :component="component"
       :filter="filter"
       v-for="(component, index) in filteredComponents"
+      @update:visible="$set(childrenVisible, component.name, $event)"
       :key="index"
     />
   </div>
@@ -39,7 +40,7 @@ export default class Item extends Vue {
   @Ref() readonly RecpieComponents?: RecipeComponent[];
 
   owned: { [key: string]: number } = {};
-  someChildVisible = true;
+  childrenVisible: { [key: string]: boolean } = {};
 
   created() {
     const owned = Object.fromEntries(
@@ -53,19 +54,6 @@ export default class Item extends Vue {
     this.owned = owned;
   }
 
-  mounted() {
-    this.someChildVisible = this.checkChildrenVisible();
-  }
-
-  beforeUpdate() {
-    // TODO: fix terrible hack to hide this Item when all child components are hidden
-    this.someChildVisible = this.checkChildrenVisible();
-  }
-
-  checkChildrenVisible() {
-    return this.RecpieComponents?.some((comp) => comp.visible) ?? false;
-  }
-
   @Watch('owned', { deep: true }) onOwnedChanged(val: Item['owned']) {
     localStorage[`items/${this.item.name}`] = JSON.stringify(this.owned);
   }
@@ -73,7 +61,8 @@ export default class Item extends Vue {
   get visible() {
     return (
       !(this.filter.owned && this.owned.overall) &&
-      (this.filter.era === 'Any' || this.someChildVisible) &&
+      (this.filter.era === 'Any' ||
+        Object.values(this.childrenVisible).some((x) => x)) &&
       this.item.name.toLowerCase().includes(this.filter.string.toLowerCase())
     );
   }

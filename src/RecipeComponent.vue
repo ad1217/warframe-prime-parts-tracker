@@ -57,7 +57,7 @@ export default class RecipeComponent extends Vue {
       ]);
   }
 
-  get eras() {
+  get eras(): { [key in Exclude<Eras, 'Any'>]?: WFDrop[] } {
     return (
       this.component.drops?.reduce((acc, d) => {
         const key = d.location.split(' ')[0] as Eras;
@@ -68,13 +68,15 @@ export default class RecipeComponent extends Vue {
   }
 
   get visible() {
-    return (
+    const visible =
       !(
         this.filter.owned && this.ownedArray.length === this.component.itemCount
       ) &&
       'ducats' in this.component &&
-      (this.filter.era === 'Any' || this.filter.era in this.eras)
-    );
+      (this.filter.era === 'Any' || this.filter.era in this.eras);
+
+    this.$emit('update:visible', visible);
+    return visible;
   }
 }
 </script>
